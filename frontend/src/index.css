@@ -1,0 +1,71 @@
+/* 1. Tailwind base styles (resets, preflight) */
+@tailwind base;
+
+/* 2. Tailwind component classes */
+@tailwind components;
+
+/* 3. Tailwind utility classes */
+@tailwind utilities;
+
+:root {
+  --color-bg: #faf7f2;
+  --color-surface: #ffffff;
+  --color-text: #1c1917; /* stone-800 */
+  --color-muted: #57534e; /* stone-600 */
+  --color-accent: #b45309; /* amber-700 */
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: 'Montserrat', 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, .font-serif {
+  font-family: 'Playfair Display', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+}
+
+/* Container helpers */
+.container-narrow {
+  max-width: 64rem; /* 1024px */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Smooth button transitions */
+.btn {
+  @apply inline-flex items-center justify-center px-5 py-2 rounded-md font-medium transition-all duration-300;
+}
+
+.btn-primary {
+  @apply bg-stone-800 text-white shadow hover:shadow-md;
+}
+
+.btn-ghost {
+  @apply text-stone-700 hover:bg-stone-200;
+}
+
+/* Card */
+.card {
+  @apply bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow;
+}
+
+/* Skeleton */
+.skeleton {
+  @apply animate-pulse bg-stone-200 rounded;
+}
+
+/* Hide scrollbars cross-browser for horizontal carousels */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

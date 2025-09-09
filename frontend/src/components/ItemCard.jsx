@@ -5,12 +5,12 @@ const ItemCard = ({ item }) => {
     <div className="card">
       <div className="flex justify-between items-start">
         <div className="flex-1">
-          <h3 className="text-xl font-semibold text-stone-800 mb-1">{item.name}</h3>
-          <p className="text-stone-600 mb-3">{item.description}</p>
-          <p className={` mb-3 p-1 text-xs rounded-xl ${item.is_avaliable ? "bg-green-600" : "bg-red-300"}`}>{item.is_avaliable ? "Available" : "Not Available"}</p>
+          <h3 className="text-xl font-semibold text-stone-800 mb-1 capitalize">{item.name}</h3>
         </div>
         <div className="text-lg font-bold text-amber-700 ml-4 whitespace-nowrap">{item.price} BIRR</div>
       </div>
+          <p className="text-stone-600 my-3 ">{item.description}</p>
+          <span className={`ml-0 sm:ml-2 px-2 py-0.5 text-xs font-medium rounded-full whitespace-nowrap"> ${item.is_available ? " bg-green-100 text-green-800" : " bg-red-100 text-red-800"}`}>{item.is_available ? "Avaliable": "Not Avaliable"}</span>
 
       {item.image_url && (
         <div className="mt-4 mb-2">

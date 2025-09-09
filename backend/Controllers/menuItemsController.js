@@ -64,8 +64,8 @@ export const createMenuItem = async (req, res) => {
 export const updateMenuItem = async (req, res) => {
     try {
         const { id } = req.params;
-        const { category_id, name, description, price, image_url } = req.body;
-        const updatedItem = await updateMenuItemModel(id, category_id, name, description, price, image_url);
+        const { category_id, name, description, price, image_url, is_available } = req.body;
+        const updatedItem = await updateMenuItemModel(id, category_id, name, description, price, image_url, is_available);
         res.status(200).json({ success: true, data: updatedItem });
     } catch (error) {
         res.status(500).json({ success: false, message: "Failed to update menu item" });

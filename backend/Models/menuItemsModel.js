@@ -51,14 +51,14 @@ export const createMenuItemModel = async (category_id, name, description, price,
 };
 
 // Update menu item
-export const updateMenuItemModel = async (id, category_id, name, description, price, image_url) => {
+export const updateMenuItemModel = async (id, category_id, name, description, price, image_url, is_available) => {
     const sql = `
         UPDATE menu_items
-        SET category_id = ?, name = ?, description = ?, price = ?, image_url = ?
+        SET category_id = ?, name = ?, description = ?, price = ?, image_url = ?, is_available = ?
         WHERE id = ?
     `;
     await mySqlConnection.query(sql, [
-        category_id, name, description, price, image_url, id
+        category_id, name, description, price, image_url, is_available, id
     ]);
     return { id, category_id, name, description, price, image_url };
 };

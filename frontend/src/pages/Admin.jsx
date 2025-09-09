@@ -22,7 +22,7 @@ const Admin = () => {
   const [newCategory, setNewCategory] = useState({ name: "", description: "" });
   const [editingCategory, setEditingCategory] = useState(null);
 
-  const [newItem, setNewItem] = useState({ category_id: "", name: "", description: "", price: "", image_url: "" });
+  const [newItem, setNewItem] = useState({ category_id: "", name: "", description: "", price: "", image_url: "", is_available: "" });
   const [editingItem, setEditingItem] = useState(null);
   const [imageInputMode, setImageInputMode] = useState("url");
 
@@ -115,8 +115,8 @@ const Admin = () => {
   const updateItem = async (e) => {
     e.preventDefault();
     try {
-      const { id, category_id, name, description, price, image_url } = editingItem;
-      const payload = { category_id, name, description, price: Number(price), image_url };
+      const { id, category_id, name, description, price, image_url, is_available } = editingItem;
+      const payload = { category_id, name, description, price: Number(price), image_url, is_available };
       const res = await api.put(`/menu-items/${id}`, payload);
       setItems((prev) => prev.map((i) => (i.id === id ? res.data.data : i)));
       setEditingItem(null);
@@ -537,7 +537,7 @@ const Admin = () => {
                       {imageInputMode === 'url' ? (
                         <input 
                           type="text"
-                          className="w-full border border-gray-300 rounded-md px-3 sm:px-4 py-2 sm:py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors duration-200 text-sm md:text-base" 
+                          className="w-full border border-gray-300 rounded-md px-3 sm:px-4 py-2 sm:py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors duration-200 text-sm md:text-base mb-2" 
                           value={editingItem.image_url || ''} 
                           onChange={(e) => setEditingItem({ ...editingItem, image_url: e.target.value })} 
                           placeholder="https://example.com/image.jpg" 
@@ -555,6 +555,27 @@ const Admin = () => {
                           }}
                         />
                       )}
+                      <div>
+                        
+                      <label 
+                        htmlFor="editItemAvailability" 
+                        className="block text-sm md:text-base font-medium text-gray-700 mb-2"
+                      >
+                        Availability
+                      </label>
+
+                      <select
+                        id="editItemAvailability"
+                        className="w-full border border-gray-300 rounded-md px-3 sm:px-4 py-2 sm:py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors duration-200 text-sm md:text-base"
+                        value={editingItem.is_available}
+                        onChange={(e) => setEditingItem({ ...editingItem, is_available: Number(e.target.value) })}
+                        required
+                      >
+                        <option value={1}>Available</option>
+                        <option value={0}>Not Available</option>
+                      </select>
+                    </div>
+
                     </div>
                     <div className="flex gap-2 sm:gap-3 justify-end">
                       <button 
@@ -590,6 +611,7 @@ const Admin = () => {
                         <div className="text-xs sm:text-sm text-gray-500 mt-1">
                           Category: {categories.find(c => c.id === it.category_id)?.name || 'Unknown'}
                         </div>
+                        <span className={`ml-0 sm:ml-2 px-2 py-0.5 text-xs font-medium rounded-full whitespace-nowrap"> ${it.is_available ? " bg-green-100 text-green-800" : " bg-red-100 text-red-800"}`}>{it.is_available ? "Avaliable": "Not Avaliable"}</span>
                       </div>
                       <div className="flex gap-2 flex-shrink-0">
                         <button 

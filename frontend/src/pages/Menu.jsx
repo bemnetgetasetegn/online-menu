@@ -15,6 +15,9 @@ const Menu = () => {
   const [query, setQuery] = useState("");
   const { t } = useI18n();
 
+
+  
+
   const API_URL = "http://localhost:5000/api";
 
   // Fetch all categories on load

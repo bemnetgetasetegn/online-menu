@@ -9,7 +9,7 @@ const ItemCard = ({ item }) => {
           <img
             src={
               item.image_url.startsWith("/uploads/")
-                ? `http://localhost:5000${item.image_url}`
+                ? `https://online-menu-m79q.onrender.com${item.image_url}`
                 : item.image_url
             }
             alt={item.name}

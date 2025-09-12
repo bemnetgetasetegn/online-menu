@@ -18,7 +18,7 @@ const Menu = () => {
 
   
 
-  const API_URL = "http://localhost:5000/api";
+  const API_URL = "https://online-menu-m79q.onrender.com/api";
 
   // Fetch all categories on load
   useEffect(() => {

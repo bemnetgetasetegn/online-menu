@@ -201,7 +201,7 @@ const CategoryPills = ({ categories, selectedId, onSelect }) => {
                   }
                 }}
                 onClick={() => onSelect(category)}
-                className={`flex-shrink-0 px-4 py-3 rounded-xl font-semibold text-sm transition-all duration-200 touch-manipulation ${
+                className={`flex-shrink-0  px-4 py-3 rounded-xl font-semibold text-sm transition-all duration-200 touch-manipulation ${
                   isSelected
                     ? 'bg-amber-600 text-white shadow-lg transform scale-105'
                     : 'bg-white text-stone-700 border-2 border-stone-200 hover:border-amber-300 hover:text-amber-700 active:scale-95'

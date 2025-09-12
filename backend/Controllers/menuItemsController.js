@@ -52,11 +52,17 @@ export const getMenuItemById = async (req, res) => {
 // Create new menu item
 export const createMenuItem = async (req, res) => {
     try {
-        const { category_id, name, description, price, image_url } = req.body;
+        const { category_id, name, description, price } = req.body;
+        let image_url = req.body.image_url;
+        // If file uploaded, use its path
+        if (req.file) {
+            image_url = `/uploads/${req.file.filename}`;
+        }
         const newItem = await createMenuItemModel(category_id, name, description, price, image_url);
         res.status(201).json({ success: true, data: newItem });
     } catch (error) {
-        res.status(500).json({ success: false, message: "Failed to create menu item" });
+        console.error('Create menu item error:', error);
+        res.status(500).json({ success: false, message: "Failed to create menu item", error: error.message });
     }
 };
 
@@ -64,11 +70,16 @@ export const createMenuItem = async (req, res) => {
 export const updateMenuItem = async (req, res) => {
     try {
         const { id } = req.params;
-        const { category_id, name, description, price, image_url, is_available } = req.body;
+        let { category_id, name, description, price, image_url, is_available } = req.body;
+        // If file uploaded, use its path
+        if (req.file) {
+            image_url = `/uploads/${req.file.filename}`;
+        }
         const updatedItem = await updateMenuItemModel(id, category_id, name, description, price, image_url, is_available);
         res.status(200).json({ success: true, data: updatedItem });
     } catch (error) {
-        res.status(500).json({ success: false, message: "Failed to update menu item" });
+        console.error('Update menu item error:', error);
+        res.status(500).json({ success: false, message: "Failed to update menu item", error: error.message });
     }
 };
 

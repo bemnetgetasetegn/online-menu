@@ -1,5 +1,6 @@
 import React from "react";
 import { useI18n } from "../i18n.jsx";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const { t } = useI18n();
@@ -22,6 +23,7 @@ const Footer = () => {
             <p className="text-gray-400">{t('satSun')}</p>
           </div>
         </div>
+            <Link className="text-gray-400" to={'/admin/login'}>Login</Link>
       </div>
     </footer>
   );

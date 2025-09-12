@@ -7,13 +7,27 @@ import {
     deleteCategory 
 } from "../Controllers/categoriesController.js";
 import {
-    getMenuItems,
-    getMenuItemsByCategory,
-    getMenuItemById,
-    createMenuItem,
-    updateMenuItem,
-    deleteMenuItem
+        getMenuItems,
+        getMenuItemsByCategory,
+        getMenuItemById,
+        createMenuItem,
+        updateMenuItem,
+        deleteMenuItem
 } from "../Controllers/menuItemsController.js";
+import multer from 'multer';
+import path from 'path';
+
+// Multer setup for file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(process.cwd(), 'uploads'));
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + '-' + file.originalname);
+    }
+});
+const upload = multer({ storage });
 import { loginAdmin, registerAdmin } from "../Controllers/authController.js";
 import { verifyToken } from "../Middleware/authMiddleware.js";
 
@@ -49,11 +63,11 @@ router.get("/menu-items/category/:categoryId", getMenuItemsByCategory);
 // Get single menu item by ID
 router.get("/menu-items/:id", getMenuItemById);
 
-// Create new menu item
-router.post("/menu-items", verifyToken, createMenuItem);
+// Create new menu item (with image upload)
+router.post("/menu-items", verifyToken, upload.single('image'), createMenuItem);
 
-// Update menu item
-router.put("/menu-items/:id", verifyToken, updateMenuItem);
+// Update menu item (with image upload)
+router.put("/menu-items/:id", verifyToken, upload.single('image'), updateMenuItem);
 
 // Delete menu item
 router.delete("/menu-items/:id", verifyToken, deleteMenuItem);

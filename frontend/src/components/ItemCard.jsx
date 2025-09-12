@@ -5,27 +5,31 @@ const ItemCard = ({ item }) => {
     <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden">
       {/* Image section */}
       {item.image_url && (
-  <div className="relative w-full aspect-[16/9]">
-    <img
-      src={item.image_url}
-      alt={item.name}
-      className="w-full h-full object-cover rounded-t-2xl"
-      onError={(e) => {
-        e.target.style.display = "none";
-      }}
-    />
-    {/* Availability Badge */}
-    <span
-      className={`absolute top-3 left-3 px-3 py-1 text-xs font-medium rounded-full ${
-        item.is_available
-          ? "bg-green-100 text-green-800"
-          : "bg-red-100 text-red-800"
-      }`}
-    >
-      {item.is_available ? "Available" : "Not Available"}
-    </span>
-  </div>
-)}
+        <div className="relative w-full aspect-[16/9]">
+          <img
+            src={
+              item.image_url.startsWith("/uploads/")
+                ? `http://localhost:5000${item.image_url}`
+                : item.image_url
+            }
+            alt={item.name}
+            className="w-full h-full object-cover rounded-t-2xl"
+            onError={(e) => {
+              e.target.style.display = "none";
+            }}
+          />
+          {/* Availability Badge */}
+          <span
+            className={`absolute top-3 left-3 px-3 py-1 text-xs font-medium rounded-full ${
+              item.is_available
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+            }`}
+          >
+            {item.is_available ? "Available" : "Not Available"}
+          </span>
+        </div>
+      )}
 
 
       {/* Content */}

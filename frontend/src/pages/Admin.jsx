@@ -22,7 +22,7 @@ const Admin = () => {
   const [newCategory, setNewCategory] = useState({ name: "", description: "" });
   const [editingCategory, setEditingCategory] = useState(null);
 
-  const [newItem, setNewItem] = useState({ category_id: "", name: "", description: "", price: "", image_url: "", is_available: "" });
+  const [newItem, setNewItem] = useState({ category_id: "", name: "", description: "", price: "", image_url: "", imageFile: null, is_available: "" });
   const [editingItem, setEditingItem] = useState(null);
   const [imageInputMode, setImageInputMode] = useState("url");
 
@@ -97,10 +97,21 @@ const Admin = () => {
   const createItem = async (e) => {
     e.preventDefault();
     try {
-      const payload = { ...newItem, price: Number(newItem.price) };
-      const res = await api.post("/menu-items", payload);
+      const formData = new FormData();
+      formData.append('category_id', newItem.category_id);
+      formData.append('name', newItem.name);
+      formData.append('description', newItem.description);
+      formData.append('price', newItem.price);
+      if (imageInputMode === 'upload' && newItem.imageFile) {
+        formData.append('image', newItem.imageFile);
+      } else if (imageInputMode === 'url' && newItem.image_url) {
+        formData.append('image_url', newItem.image_url);
+      }
+      const res = await api.post("/menu-items", formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
       setItems((prev) => [res.data.data, ...prev]);
-      setNewItem({ category_id: "", name: "", description: "", price: "", image_url: "" });
+  setNewItem({ category_id: "", name: "", description: "", price: "", image_url: "", imageFile: null, is_available: "" });
     } catch {
       alert("Failed to create item");
     }
@@ -115,9 +126,23 @@ const Admin = () => {
   const updateItem = async (e) => {
     e.preventDefault();
     try {
-      const { id, category_id, name, description, price, image_url, is_available } = editingItem;
-      const payload = { category_id, name, description, price: Number(price), image_url, is_available };
-      const res = await api.put(`/menu-items/${id}`, payload);
+      const { id, category_id, name, description, price, image_url, imageFile, is_available } = editingItem;
+      let res;
+      if (imageInputMode === 'upload' && imageFile) {
+        const formData = new FormData();
+        formData.append('category_id', category_id);
+        formData.append('name', name);
+        formData.append('description', description);
+        formData.append('price', price);
+        formData.append('is_available', is_available);
+        formData.append('image', imageFile);
+        res = await api.put(`/menu-items/${id}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+      } else {
+        const payload = { category_id, name, description, price: Number(price), image_url, is_available };
+        res = await api.put(`/menu-items/${id}`, payload);
+      }
       setItems((prev) => prev.map((i) => (i.id === id ? res.data.data : i)));
       setEditingItem(null);
     } catch {
@@ -421,8 +446,8 @@ const Admin = () => {
                       <input 
                         type="text"
                         className="w-full border border-gray-300 rounded-md px-3 sm:px-4 py-2 sm:py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors duration-200 text-sm md:text-base" 
-                        value={newItem.image_url} 
-                        onChange={(e) => setNewItem({ ...newItem, image_url: e.target.value })} 
+                        value={newItem.image_url || ""} 
+                        onChange={(e) => setNewItem({ ...newItem, image_url: e.target.value, imageFile: null })} 
                         placeholder="https://example.com/image.jpg" 
                       />
                     ) : (
@@ -432,9 +457,7 @@ const Admin = () => {
                         className="w-full border border-stone-300 rounded-md px-3 py-2 text-sm file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100" 
                         onChange={(e) => {
                           const file = e.target.files?.[0];
-                          if (file) {
-                            handleFileToDataUrl(file, (data) => setNewItem({ ...newItem, image_url: data }));
-                          }
+                          setNewItem({ ...newItem, imageFile: file || null, image_url: "" });
                         }} 
                       />
                     )}
@@ -539,7 +562,7 @@ const Admin = () => {
                           type="text"
                           className="w-full border border-gray-300 rounded-md px-3 sm:px-4 py-2 sm:py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors duration-200 text-sm md:text-base mb-2" 
                           value={editingItem.image_url || ''} 
-                          onChange={(e) => setEditingItem({ ...editingItem, image_url: e.target.value })} 
+                          onChange={(e) => setEditingItem({ ...editingItem, image_url: e.target.value, imageFile: null })} 
                           placeholder="https://example.com/image.jpg" 
                         />
                       ) : (
@@ -549,9 +572,7 @@ const Admin = () => {
                           className="w-full border border-stone-300 rounded-md px-3 py-2 text-sm file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
                           onChange={(e) => {
                             const file = e.target.files?.[0];
-                            if (file) {
-                              handleFileToDataUrl(file, (data) => setEditingItem({ ...editingItem, image_url: data }));
-                            }
+                            setEditingItem({ ...editingItem, imageFile: file || null, image_url: '' });
                           }}
                         />
                       )}

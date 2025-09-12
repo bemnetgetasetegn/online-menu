@@ -1,4 +1,4 @@
-import mySqlConnection from "../config/db.js";
+import mySqlConnection from "../Config/db.js";
 
 // ================== FIND ADMIN BY EMAIL ==================
 export const findAdminByEmail = async (email) => {

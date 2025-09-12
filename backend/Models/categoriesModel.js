@@ -1,4 +1,4 @@
-import mySqlConnection from "../config/db.js";
+import mySqlConnection from "../Config/db.js";
 
 // Get all categories
 export const getCategoriesModel = async () => {

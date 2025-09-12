@@ -1,4 +1,4 @@
-import mySqlConnection from "../config/db.js";
+import mySqlConnection from "../Config/db.js";
 
 // Get all menu items
 export const getMenuItemsModel = async () => {

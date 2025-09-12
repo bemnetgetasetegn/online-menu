@@ -1,7 +1,7 @@
 
 import express from 'express';
 import dotenv from 'dotenv';
-import mySqlConnection from './config/db.js';
+import mySqlConnection from './Config/db.js';
 import cors from 'cors';
 import router from './Router/route.js';
 import path from 'path';

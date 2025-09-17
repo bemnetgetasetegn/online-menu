@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -13,6 +13,7 @@ const Menu = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
+  const itemsSectionRef = useRef(null);
   const { t } = useI18n();
 
 
@@ -72,9 +73,21 @@ const Menu = () => {
             <p className="text-stone-600 max-w-2xl mx-auto">{t('discoverSubtitle')}</p>
           </div>
 
-          {/* Search + Categories */}
+          {/* Sticky Search Bar */}
+          <div className="w-full sticky top-0 z-40 pt-2 pb-2 mb-6">
+            <SearchBar
+              value={query}
+              onChange={(val) => {
+                setQuery(val);
+                if (itemsSectionRef.current) {
+                  itemsSectionRef.current.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
+              placeholder={t('searchPlaceholder')}
+            />
+          </div>
+          {/* Categories */}
           <div className="flex flex-col items-center gap-6 mb-8">
-            <SearchBar value={query} onChange={setQuery} placeholder={t('searchPlaceholder')} />
             <CategoryPills
               categories={categories}
               selectedId={selectedCategory?.id}
@@ -83,52 +96,54 @@ const Menu = () => {
           </div>
 
           {/* Menu Items */}
-          {loading ? (
-            <div className="grid grid-cols-1 gap-6">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="card">
-                  <div className="flex justify-between">
-                    <div className="flex-1">
-                      <div className="h-6 w-48 skeleton mb-2" />
-                      <div className="h-4 w-64 skeleton" />
+          <div ref={itemsSectionRef}>
+            {loading ? (
+              <div className="grid grid-cols-1 gap-6">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="card">
+                    <div className="flex justify-between">
+                      <div className="flex-1">
+                        <div className="h-6 w-48 skeleton mb-2" />
+                        <div className="h-4 w-64 skeleton" />
+                      </div>
+                      <div className="h-6 w-20 skeleton ml-4" />
                     </div>
-                    <div className="h-6 w-20 skeleton ml-4" />
+                    <div className="h-48 w-full skeleton mt-4" />
                   </div>
-                  <div className="h-48 w-full skeleton mt-4" />
-                </div>
-              ))}
-            </div>
-          ) : menuItems.length > 0 ? (
-            <div className="space-y-8">
-              <h2 className="text-2xl font-serif font-semibold text-stone-800 border-b pb-2 border-stone-200">
-                {selectedCategory?.id === 'all' ? t('allItems') : selectedCategory?.name}
-              </h2>
-
-              {menuItems
-                .filter((item) =>
-                  query.trim() === ""
-                    ? true
-                    : `${item.name} ${item.description}`
-                        .toLowerCase()
-                        .includes(query.toLowerCase())
-                )
-                .map((item) => (
-                  <ItemCard key={item.id} item={item} />
                 ))}
-            </div>
-          ) : selectedCategory ? (
-            <div className="text-center py-16 bg-white rounded-xl">
-              <div className="text-stone-400 text-6xl mb-4">🍜</div>
-              <h3 className="text-xl font-semibold text-stone-700 mb-2">{t('noItems')}</h3>
-              <p className="text-stone-500">{t('noItemsDesc')}</p>
-            </div>
-          ) : (
-            <div className="text-center py-16 bg-white rounded-xl">
-              <div className="text-stone-400 text-6xl mb-4">📋</div>
-              <h3 className="text-xl font-semibold text-stone-700 mb-2">{t('selectCategory')}</h3>
-              <p className="text-stone-500">{t('selectCategory')}</p>
-            </div>
-          )}
+              </div>
+            ) : menuItems.length > 0 ? (
+              <div className="space-y-8">
+                <h2 className="text-2xl font-serif font-semibold text-stone-800 border-b pb-2 border-stone-200">
+                  {selectedCategory?.id === 'all' ? t('allItems') : selectedCategory?.name}
+                </h2>
+
+                {menuItems
+                  .filter((item) =>
+                    query.trim() === ""
+                      ? true
+                      : `${item.name} ${item.description}`
+                          .toLowerCase()
+                          .includes(query.toLowerCase())
+                  )
+                  .map((item) => (
+                    <ItemCard key={item.id} item={item} />
+                  ))}
+              </div>
+            ) : selectedCategory ? (
+              <div className="text-center py-16 bg-white rounded-xl">
+                <div className="text-stone-400 text-6xl mb-4">🍜</div>
+                <h3 className="text-xl font-semibold text-stone-700 mb-2">{t('noItems')}</h3>
+                <p className="text-stone-500">{t('noItemsDesc')}</p>
+              </div>
+            ) : (
+              <div className="text-center py-16 bg-white rounded-xl">
+                <div className="text-stone-400 text-6xl mb-4">📋</div>
+                <h3 className="text-xl font-semibold text-stone-700 mb-2">{t('selectCategory')}</h3>
+                <p className="text-stone-500">{t('selectCategory')}</p>
+              </div>
+            )}
+          </div>
 
         </div>
       </main>

@@ -27,9 +27,12 @@ const Menu = () => {
       try {
         const res = await axios.get(`${API_URL}/categories`);
         setCategories(res.data.data || []);
-        // Select "All" category by default
-        const allCategory = { id: 'all', name: 'All' };
-        handleCategoryClick(allCategory);
+        // Select "All" category by default, but do NOT scroll on initial load
+        setSelectedCategory({ id: 'all', name: 'All' });
+        // Optionally, fetch all menu items without scrolling
+        const itemsRes = await axios.get(`${API_URL}/menu-items`);
+        const items = itemsRes.data.data || itemsRes.data || [];
+        setMenuItems(Array.isArray(items) ? items : []);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -39,8 +42,9 @@ const Menu = () => {
 
   // Fetch menu items when a category is selected
   const handleCategoryClick = async (category) => {
-    setSelectedCategory(category);
-    setLoading(true);
+  setSelectedCategory(category);
+  setQuery(""); // Reset search value
+  setLoading(true);
     try {
       let res;
       if (category.id === 'all') {
@@ -53,6 +57,10 @@ const Menu = () => {
       // Handle different possible response structures
       const items = res.data.data || res.data || [];
       setMenuItems(Array.isArray(items) ? items : []);
+      // Only scroll if this is a real user interaction (not initial load)
+      if (itemsSectionRef.current) {
+        itemsSectionRef.current.scrollIntoView({ behavior: "smooth" });
+      }
     } catch (error) {
       console.error("Error fetching menu items:", error);
       setMenuItems([]);
@@ -79,7 +87,8 @@ const Menu = () => {
               value={query}
               onChange={(val) => {
                 setQuery(val);
-                if (itemsSectionRef.current) {
+                // Only scroll if user actually types something
+                if (val.trim() !== "" && itemsSectionRef.current) {
                   itemsSectionRef.current.scrollIntoView({ behavior: "smooth" });
                 }
               }}
